@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title>Juego de etimologias</title>
+    <link rel="stylesheet" href="estilo-ahoracado.css">
+  </head>
+  <body>
+      <div class="main-container">
+        <div id = "entrada">
+          <h1>JUEGO DEL AHORCADO</h1>
+        <button id="ingreso">INGRESAR</button>
+      </div>
+        <div id = "bienvenida">
+          <h1>¡Bienvenido al juego del Ahorcado!</h1>
+          <p>Instrucciones:</p>
+          <li>Adivina la palabra correcta con el teclado que se te presenta</li>
+          <li>Cada letra te acerca al ahorcado</li>
+          <li>Tienes 6 intentos para ganar</li>
+          <li>Puedes pedir una pista con el boton "¡Dame una pista!"</li>
+          <li>Puedes seleccionar el nivel de dificulad...</li>
+          <li>En el facil tienes 8 intentos para fallar</li>
+          <li>En el medio tienes 6 intentos para fallar</li>
+          <li>En el dificil tienes 5 intentos para fallar</li>
+          <li>En el extremo tienes 3 intentos para fallar</li>
+          <select id = "dificultad">
+            <option value="facil">Nivel facil</option>
+            <option value="medio">Nivel medio</option>
+            <option value="dificil">Nivel dificil</option>
+            <option value="extremo">Nivel extremo</option>
+          </select>
+          <button id="comenzar">Comenzar juego</button>
+        </div>
+        <div id="juego" style="display:none">
+        <h1 class="titulo">Juego del ahorcado</h1>
+        <h1 id="msg-final1"></h1>
+        <h1 id="msg-final2"></h1>
+        <h3 id="acierto"></h3>
+        <div class="flex-row no-wrap">
+          <h2 class="palabra" id="palabra"></h2>
+          <picture>
+            <img src="img/ahorcado_6.png" alt="" id="image6">
+            <img src="img/ahorcado_5.png" alt="" id="image5">
+            <img src="img/ahorcado_4.png" alt="" id="image4">
+            <img src="img/ahorcado_3.png" alt="" id="image3">
+            <img src="img/ahorcado_2.png" alt="" id="image2">
+            <img src="img/ahorcado_1.png" alt="" id="image1">
+            <img src="img/ahorcado_0.png" alt="" id="image0">
+          </picture>
+        </div>
+        <div class="flex-row" id="turnos">
+          <div class="col">
+            <h3>Puntaje mas alto: <span id="record">0</span></h3>
+            <h3>Score: <span id="score">0</span></h3>
+            <h3>Intentos restantes: <span id="intentos">6</span></h3>
+          </div>
+          <div class="col">
+            <button onclick="inicio()" id="reset">Elegir otra palabra</button>
+            <button onclick="pista()" id="pista">¡Dame una pista!</button>
+            <span id="hueco-pista"></span>
+          </div>
+          </div>
+        
+        <div class="flex-row">
+          <div class="col">
+            <div class="flex-row" id="abcdario">
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+
+      </div>
+      <style> 
+        * {
+          background-color: rgb(255, 255, 255);
+  box-sizing: border-box;
+}
+#entrada{
+  display: block;
+}
+#bienvenida{
+  display: none;
+}
+#juego{
+  display: none;
+}
+#ingreso{
+  position: absolute;
+  width: 400px;
+  height: 100px;
+  background-color: aqua;
+}
+#h1{
+  margin: 50px auto 80px auto;
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+}
+.main-container {
+  background-color: rgb(91, 227, 245);
+  max-width: 800px;
+}
+h1.titulo {
+  margin: 50px auto 80px auto;
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+}
+h1#msg-final1 {
+  text-align: center;
+  color: rgb(41, 151, 14);
+  transition: all .5s ease;
+  transform: scale(0);
+  min-height: 30px;
+  margin-bottom: 0;
+}
+h1#msg-final2 {
+  text-align: center;
+  color: crimson;
+  transition: all .5s ease;
+  transform: scale(0);
+  min-height: 30px;
+  margin-bottom: 0;
+}
+.zoom-in {
+  transform: scale(1) !important;
+}
+#acierto {
+  text-align: center;
+  min-height: 24px;
+  transform: scale(0);
+}
+.acierto {
+  animation: zoomInOut 1s ease;
+}
+.rojo {
+  color: red;
+}
+.verde {
+  color: green;
+}
+@keyframes zoomInOut {
+  0% { transform: scale(0); }
+  50% { transform: scale(1); }
+  70% { transform: scale(1); }
+  100% { transform: scale(0); }
+}
+h2.palabra {
+  margin: 0 auto 25px auto;
+  text-align: center;
+  color: royalblue;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+}
+.flex-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 10px auto; 
+}
+.no-wrap {
+  flex-wrap: nowrap !important;
+}
+.col {
+  width: 50%;
+  text-align: center;
+}
+
+#turnos h3 {
+  margin: auto;
+}
+h3 span {
+   color: orangered;
+}
+.letra:disabled {
+  color:rgba(255, 0, 0, 0.5);
+}
+picture {
+  position: relative;
+}
+picture img {
+  position: absolute;
+  top: -203px;
+  left: -205px;
+  height: 225px;
+}
+#image5, #image4, #image3,
+#image2, #image1, #image0 {
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.fade-in {
+  opacity: 1 !important;
+}
+.encuadre {
+  border: 2px dashed rgb(231, 10, 54);
+  padding: 3px 2px 2px 6px;
+}
+      </style> 
+      </div>
+    <script>
+        // ### VARIABLES ###
+// Array de palabras
+var palabras = [["agogia", "De conduccion o direccion"], ["agogo", "De guia o conductor"], ["algia", "De dolor"], ["andria", "De hombre"], ["antropo", "De ser humano"], ["arquia", "De de gobierno o mando"], ["bio", "De vida"], ["cardia", "De corazon"], ["carpio", "De fruto"], ["cefalia", "De cabeza"], ["cefalo", "De aquello que tiene cabeza"], ["ciclo", "De circulo"], ["cida", "De lo que mata"], ["cidio", "De la accion de matar"], ["cito", "De celula"], ["cola", "De habitante, relacion"], ["cracia", "De dominio o poder"], ["crata", "De lo que domina o lo que tine el poder"], ["cromia", "De coloracion"], ["cromo", "De color"], ["cultor", "De cultivador o criador"], ["cultura", "De cultivo o cuidado"], ["dactilo", "De dedo"], ["dromo", "De lugar o estadio"], ["edro", "De cara o plano"], ["emia", "De sangre"], ["fagia", "De comer"], ["fero", "De lo que lleva, tiene o produce"], ["fago", "De lo que come"], ["filia", "De aficion, gusto o amor"], ["filo", "De aficionado, amigo o amante"], ["floro", "De flor"], ["fobia", "Del sentimiento de horror, repulsion o odio"], ["fono", "De sonido o hablante"], ["forme", "Con forma"], ["fugo", "De lo que repele, auyenta o hace desaparecer"], ["geno", "Lo que genera o produce"], ["gono", "De angulo"], ["grafia", "De descripcion, tratado, escritura, representacion, grafica o conjunto"], ["acui", "De agua"], ["aereo", "De aire o aereo"], ["afro", "De africano"], ["agri", "De campo"], ["agro", "De campo"], ["an", "De negación o privación"], ["ana", "De contra"], ["anarco", "De anarquismo"], ["andro", "De masculino"], ["anemo", "De viento"], ["anfi", "De Alrededor"], ["anglo", "De inglés"], ["ante", "De anterioridad en el tiempo"], ["anti", "De oposición"], ["antropo", "De ser humano"], ["arbori", "De árbol"], ["archi", "De superioridad"], ["arqueo", "De antiguo"], ["arz", "De situación preeminente"], ["astro", "De estrella"], ["atto", "De trillonésima parte"], ["audi", "De sonido"], ["auto", "De uno mismo"], ["baro", "De pesadez"], ["bi", "De dos veces"], ["biblio", "De libro"], ["card", "De corazón"], ["cefal", "De cabeza"], ["centi", "Centésima parte"], ["cian", "Azul"], ["ciber", "Cibernético de internet"], ["cito", "Célula"], ["clepto", "Robo"], ["co", "Reunión, cooperación, compañía"], ["contra", "Oposición, refuerzo, segundo lugar"], ["copro", "Excremento"], ["cromo", "Color"], ["cuadri, cuatri", "Cuatro"], ["cuadru", "Cuatro"], ["cuasi", "Casi"], ["dactil", "dedo"], [ "de", "Negación, privación"], ["di", "Dos"], ["dis", "Negación, contrariedad, dificultado anomalía"], ["dodeca", "Doce"], ["eco", "Casa medioambiente, ecológico"], ["electro", "Electricidad o eléctrico"], ["endo", "Dentro de, en el interior"], ["entre", "Situación intermedia"], ["epi", "Sobre"], ["equi", "Igual"], ["etno", "Raza o pueblo"], ["euro", "Europeo, de la Unión Europea, de euro"], ["ex", "fuera, privación"], ["exo", "Fuera de o en el exterior"], ["extra", "Fuera de, en grado sumo"], ["fago", "Que come"], ["fento", "Milbillonésima parte"], ["filo", "Amigo o amante de"], ["requeté", "Repetición,intensificación"], ["retro", "Hacia atrás"], ["rino", "Nariz"], ["semi", "Medio"], ["servo","Mecanismo o sistema auxiliar"], ["sobre", "Encima de, con exceso"], ["socio", "Social,sociedad"], ["sub", "bajo, debajo de, de menor categoria o importancia, con escasez"], ["super", "Encima de, con exceso, con grado minimo"], ["tanato", "Muerte"], ["tardo", "Tardío, final"], ["tele", "Lejos,distancia, relacionado con la televisión"], ["teo", "Dios"], ["tera", "Un billón"], ["termo", "Calor, temperatura"], ["tetra", "Cuatro"], ["trans", "Al otro lado, a través de"], ["tras", "Trans, detrás de"], ["tri", "Tres"], ["turbo", "se usa para formar nombres de máquinas en las que el motor es una turbina"], ["ultra", "Más allá de, al otro lado de, muy"], ["uni", "Uno"], ["vi", "En vez de, inmediatamente inferior a"], ["xeno", "Extranjero"], ["zoo", "Animal"], ["grafo", "Que describe, que escribe, profesión"], ["grama", "Escrito, representación , gráfico"], ["iatra", "Médico especialista"], ["iatría", "Especialidad médica"], ["itis", "Inflamación"], ["latra", "Que adora"], ["latría", "Adoración"], ["lito", "Piedra"], ["logía", "Estudio, ciencia"], ["logo, loga", "Estudioso, especialista"], ["manía", "Afición desmedida"], ["mano", "Aficionado en exceso"], ["mancia, mancía", "Adivinación"], ["morfo", "Forma"], ["nomía", "Ley"], ["nomo", "Estudioso"], ["oide", "Relación, semejanza"], ["oideo", "Relación, semejanza"], ["oides", "Relación, semejanza"], ["oidal", "Relación, semejanza"], ["oma", "Tumor"], ["opsia", "Vista, estudio"], ["paro, para", "Que pare"], ["pata", "Que padece, médico"], ["patia", "Enfermedad, sentimiento, medicina"], ["peda", "Educador"], ["pedia", "Educación"], ["podo", "Pie"], ["poli", "Ciudad"], ["ptero", "Ala"], ["rragia", "Flujo, derramamiento"], ["rrea", "Flujo, emanación"], ["scopia", "Exploración"], ["scopio", "Instrumento para ver"], ["sis", "Enfermedad"], ["statico", "Equilibrio"], ["terapia", "Curación"], ["tomia", "Corte, incisión"], ["voro", "De que come"], ["aceo", "De semejanza"], ["acho", "De despectivo"], ["aco", "De gentilicio"], ["ada", "De conjunto"], ["ado", "De tiempo"], ["aico", "De origen"], ["aje", "De acción y efecto"], ["ajo", "De diminutivo"], ["al", "De lugar"], ["ales", "De humorístico"], ["ambre", "De conjunto"], ["amen", "De conjunto"], ["an", "De gentilicio"], ["aneo", "De relación"], ["ano", "De Origen"], ["ano", "De hidrocarburo saturado"], ["anza", "De Acción y efecto"], ["ar", "De condición"], ["ario", "De profesión"], ["astro", "De despectivo"], ["ata", "De abreviatura coloquial"], ["atico", "De  pertenecía"], ["ato", "De dignidad"], ["avo", "De partitivo"], ["azgo", "De estado"], ["bilidad", "De cualidad"], ["ble", "De capacidad"], ["cion", "De Acción y efecto"], ["da", "De contenido"]];
+// Palabra a averiguar
+var palabra = "";
+// Nº aleatorio
+var rand;
+// Palabra oculta
+var oculta = [];
+// Elemento html de la palabra
+var hueco = document.getElementById("palabra");
+// Contador de intentos
+var cont = 0;
+// Botones de letras
+var buttons = document.getElementsByClassName('letra');
+// Boton de reset
+var btnInicio = document.getElementById("reset");
+var myscore = 0;
+var myrecord = 0;
+let juegito = false;
+const sonidoclick = new Audio("Sonidos/678248__pixeliota__mouse-click-sound.mp3");
+const sonidowin = new Audio("Sonidos/win.mp3");
+const sonidolose = new Audio("Sonidos/lose.mp3");
+const sonidorecord = new Audio("Sonidos/record.mp3");
+const sonidointro = new Audio("Sonidos/intro_espacial.mp3");
+const sonidoin = new Audio("Sonidos/Intro.mp3");
+
+/*document.addEventListener('click',function(){
+  sonidoin.play();
+},{once:true});*/
+// Seleccion de dificulad
+const dificultadSelect = document.getElementById("dificultad");
+function actualizardificultad(){
+  const dificultad = dificultadSelect.value;
+  switch(dificultad){
+    case 'facil':
+      sonidoclick.play();
+      cont = 8;
+      break;
+    case 'medio':
+      sonidoclick.play();
+      cont = 6;
+    break;
+    case 'dificil':
+      sonidoclick.play();
+      cont = 5;
+      break;
+    case 'extremo':
+      sonidoclick.play();
+      cont = 3;
+      break;
+  }
+  document.getElementById("intentos").innerHTML = cont;//aactualiza la variable
+}
+dificultadSelect.addEventListener('change',() =>{
+  sonidoin.pause();
+  sonidoin.currentTime = 0;
+  actualizardificultad();
+  inicio();
+  compruebaFin();
+});
+
+//entrada
+document.getElementById("ingreso").addEventListener("click",function(){
+  document.getElementById("entrada").style.display = "none";
+  document.getElementById("bienvenida").style.display = "block";
+  sonidoin.play();
+});
+
+// Inicio de juego con boton de comenzar
+document.getElementById("comenzar").addEventListener("click",function(){
+  sonidoclick.play();
+  sonidoin.pause();
+  sonidoin.currentTime = 0;
+  document.getElementById("bienvenida").style.display = "none";
+  document.getElementById("juego").style.display = "block";
+  
+// Iniciar
+window.onload = inicio();
+});
+
+// Escoger palabra al azar
+function generaPalabra() {
+  rand = (Math.random() * 19).toFixed(0);
+  palabra = palabras[rand][0].toUpperCase();
+  console.log(palabra);
+}
+
+// Funcion para pintar los guiones de la palabra
+function pintarGuiones(num) {
+  oculta = [];
+  for (var i = 0; i < num; i++) {
+    oculta[i] = "_";
+  }
+  hueco.innerHTML = oculta.join(" ");
+}
+
+//Generar abecedario
+function generaABC (a,z) {
+  document.getElementById("abcdario").innerHTML = "";
+  var i = a.charCodeAt(0), j = z.charCodeAt(0);
+  var letra = "";
+  for( ; i<=j; i++) {
+    letra = String.fromCharCode(i).toUpperCase();
+    document.getElementById("abcdario").innerHTML += "<button value='" + letra + "' onclick='intento(\"" + letra + "\")' class='letra' id='"+letra+"'>" + letra + "</button>";
+    if(i==110) {
+      document.getElementById("abcdario").innerHTML += "<button value='Ñ' onclick='intento(\"Ñ\")' class='letra' id='"+letra+"'>Ñ</button>";
+    }
+  }
+}
+
+// Chequear intento
+function intento(letra) {
+  document.getElementById(letra).disabled = true;
+  sonidoclick.play();
+  if(palabra.indexOf(letra) != -1) {
+    for(var i=0; i<palabra.length; i++) {
+      if(palabra[i]==letra) oculta[i] = letra;
+    }
+    hueco.innerHTML = oculta.join(" ");
+    document.getElementById("acierto").innerHTML = "¡Bien!";
+    document.getElementById("acierto").className += "acierto verde";
+  }else{
+    cont--;
+    document.getElementById("intentos").innerHTML = cont;
+    document.getElementById("acierto").innerHTML = "¡Fallaste!";
+    document.getElementById("acierto").className += "acierto rojo";
+    document.getElementById("image"+cont).className += "fade-in";
+  }
+  compruebaFin();
+  setTimeout(function () { 
+    document.getElementById("acierto").className = ""; 
+  }, 800);
+}
+
+// Obtener pista
+function pista() {
+  document.getElementById("hueco-pista").innerHTML = palabras[rand][1];
+  sonidoclick.play();
+}
+
+// Compruba si ha finalizado
+function compruebaFin() {
+  if( oculta.indexOf("_") == -1 ) {
+    sonidointro.pause();
+    myscore ++;
+    localStorage.setItem("myscore", myscore);
+    if(myscore > myrecord){
+      myrecord = myscore;
+      localStorage.setItem("myrecord", myrecord);
+      document.getElementById("record").innerText = myrecord;
+      sonidorecord.play();
+    }
+    document.getElementById("score").innerText = myscore;
+    document.getElementById("msg-final1").innerHTML = "¡¡ Felicidades !!";
+    document.getElementById("msg-final1").className += "zoom-in";
+    document.getElementById("palabra").className += " encuadre";
+    sonidowin.play();
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = true;
+    }
+    document.getElementById("reset").innerHTML = "Siguiente palabra";
+    btnInicio.onclick = function() { inicio(); };
+    sonidointro.currentTime = 0;
+  }
+  else if( cont == 0 ) {
+    sonidointro.pause();
+    myscore = 0;
+    localStorage.setItem("myscore", myscore);
+    document.getElementById("score").innerText = myscore;
+    document.getElementById("msg-final2").innerHTML = "<h1>Game Over</h1> <h2><H6>La palabra era: (\""+ palabras[rand][0]+"\")</H6></h2>";
+    document.getElementById("msg-final2").className += "zoom-in";
+    sonidolose.play();
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = true;
+    }
+    document.getElementById("reset").innerHTML = "Volver a empezar";
+    btnInicio.onclick = function () { inicio(); };
+    sonidoclick.play();
+    sonidointro.currentTime = 0;
+  }
+}
+
+// Restablecer juego
+function inicio() {
+  actualizardificultad();
+  // Recuperar puntaje desde Local Storage
+  myscore = parseInt(localStorage.getItem("myscore")) || 0;
+  // Recuperar puntaje máximo desde Local Storage
+  myrecord = parseInt(localStorage.getItem("myrecord")) || 0;
+  document.getElementById("record").innerText = myrecord;
+  generaPalabra();
+  pintarGuiones(palabra.length);
+  generaABC("a","z");
+  document.getElementById("intentos").innerHTML=cont;
+  document.getElementById("msg-final1").className = "";
+  document.getElementById("msg-final2").className = "";
+  document.getElementById("palabra").className = "";
+  document.getElementById("acierto").className = "";
+  document.getElementById("hueco-pista").innerHTML = "";
+  for(var i = 0; i < buttons.length; i++){
+    buttons[i].disabled = false;
+  }
+  sonidointro.play();
+}
+    </script>
+  </body>
+</html>
